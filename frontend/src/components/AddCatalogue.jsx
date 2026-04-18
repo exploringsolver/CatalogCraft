@@ -37,25 +37,31 @@ function AddCatalogue() {
   const [isListening, setIsListening] = useState(false);
   const [wordsArray, setWordsArray] = useState([]);
 
-  const recognition = new window.webkitSpeechRecognition(); // For Chrome
-  recognition.continuous = true;
-  recognition.lang = 'en-US';
+  const recognition =
+    typeof window !== 'undefined' && window.webkitSpeechRecognition
+      ? new window.webkitSpeechRecognition() // For Chrome
+      : null;
 
-  recognition.onend = function () {
-    sendSpeechToServer(wordsArray);
-  };
+  if (recognition) {
+    recognition.continuous = true;
+    recognition.lang = 'en-US';
 
-  recognition.onerror = function (event) {
-    console.error('Speech recognition error:', event.error);
-  };
+    recognition.onend = function () {
+      sendSpeechToServer(wordsArray);
+    };
 
-  recognition.onresult = function (event) {
-    const current = event.resultIndex;
-    const transcript = event.results[current][0].transcript;
-    const words = transcript.split(',').map(word => word.trim());
-    setWordsArray(prevWordsArray => prevWordsArray.concat(words.filter(Boolean)));
-    console.log('Current array:', wordsArray);
-  };
+    recognition.onerror = function (event) {
+      console.error('Speech recognition error:', event.error);
+    };
+
+    recognition.onresult = function (event) {
+      const current = event.resultIndex;
+      const transcript = event.results[current][0].transcript;
+      const words = transcript.split(',').map(word => word.trim());
+      setWordsArray(prevWordsArray => prevWordsArray.concat(words.filter(Boolean)));
+      console.log('Current array:', wordsArray);
+    };
+  }
 
   function changeInputValues(values) {
     const form = document.getElementsByTagName("form")[0];
@@ -130,7 +136,7 @@ function AddCatalogue() {
           formDataWithImages.append(key, formData[key]);
         }
       }
-      const response = await axios.post('http://panel.mait.ac.in:8012/catalogue/create/', formDataWithImages, {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/catalogue/create`, formDataWithImages, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data'
@@ -173,14 +179,26 @@ function AddCatalogue() {
   };
 
   const toggleListening = () => {
+    if (!recognition) {
+      alert('Speech recognition is not supported in this browser.');
+      return;
+    }
     if (!isListening) {
-      recognition.start();
-      setIsListening(true);
-      setWordsArray([]);
+      try {
+        recognition.start();
+        setIsListening(true);
+        setWordsArray([]);
+      } catch (e) {
+        console.error('Speech recognition start failed:', e);
+      }
     } else {
-      recognition.stop();
-      setIsListening(false);
-      sendSpeechToServer(wordsArray);
+      try {
+        recognition.stop();
+        setIsListening(false);
+        sendSpeechToServer(wordsArray);
+      } catch (e) {
+        console.error('Speech recognition stop failed:', e);
+      }
     }
   };
   const [categories, setCategories] = useState([]);
@@ -193,16 +211,53 @@ function AddCatalogue() {
   }, []);
 
   return (
-    <div className="w-[90%] mx-auto mt-8">
-      <form onSubmit={handleSubmit} className="bg-gray-100 shadow-lg border-[1px] border-black rounded px-8 pt-6 pb-8 mb-4 flex gap-1 flex-col">
+    <div className="lux-shell">
+      <div className="lux-container py-12">
+      <form onSubmit={handleSubmit} className="lux-panel p-8 shadow-lg rounded-[28px] flex gap-1 flex-col">
         <h1 className='text-2xl font-mono my-5'>Catalogue Creation</h1>
-        <Button variant='filled' color='amber' className="flex items-center gap-3 max-w-56" id="voiceButton" onClick={toggleListening} >
+        <div className="flex flex-wrap items-center gap-4">
+        <Button
+          type="button"
+          variant='filled'
+          color='amber'
+          className="flex items-center gap-3 max-w-56 !bg-[#b91c1c] hover:!bg-[#dc2626] !text-white"
+          id="voiceButton"
+          onClick={toggleListening}
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
             <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z" />
             <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5" />
           </svg>
           {isListening ? "Stop Voice Input" : "Start Voice Input"}
         </Button>
+        <div className="flex items-center gap-3">
+          {isListening ? (
+            <>
+              <div className="flex items-end gap-1">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="w-1 rounded-full bg-[#ff5a1f]"
+                    style={{
+                      height: `${8 + (i % 3) * 6}px`,
+                      animation: "equalizer 0.9s ease-in-out infinite",
+                      animationDelay: `${i * 0.12}s`,
+                      opacity: 0.9,
+                    }}
+                  />
+                ))}
+              </div>
+              <p className="text-sm text-red-200">
+                Listening… <span className="text-slate-400">(say values separated by commas)</span>
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-slate-400">
+              Voice fill is optional. Click to start/stop.
+            </p>
+          )}
+        </div>
+        </div>
         <br />
         <div className='sm:flex gap-3 flex-wrap'>
           <div className="form-group">
@@ -326,11 +381,11 @@ function AddCatalogue() {
         <div className='mt-5'>
           {/*TODO: there needs to be a select option from react select to make it a select with search for the seller NP.*/}
           <div className="form-group w-[200px]">
-            <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">
+            <label htmlFor="category" className="block text-slate-200 text-sm font-semibold mb-2">
               Category
             </label>
             <select
-              className="form-control shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-slate-100 shadow-[0_18px_60px_rgba(0,0,0,0.35)] outline-none transition focus:border-red-500/40 focus:ring-2 focus:ring-red-500/20"
               id="category"
               name="category"
               value={formData.category}
@@ -339,8 +394,11 @@ function AddCatalogue() {
               <option value="">Select a category</option>
               {Array.isArray(categories.categories) &&
                 categories.categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
+                  <option
+                    key={category?._id || category?.category || category}
+                    value={category?.category || ""}
+                  >
+                    {category?.category}
                   </option>
                 ))}
             </select>
@@ -457,6 +515,7 @@ function AddCatalogue() {
           </Button>
         </div>
       </form>
+      </div>
     </div>
   );
 }

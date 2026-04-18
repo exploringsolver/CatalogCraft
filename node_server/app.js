@@ -45,6 +45,11 @@ const cors = require('cors'); // Importing cors package to handle CORS
 
 const app = express();
 
+// Behind reverse proxies (Cloudflare, Render, Fly, etc.) so `req.secure` and IPs are correct.
+if (process.env.TRUST_PROXY === 'true' || process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // Middleware to handle CORS
 app.use(cors());
 

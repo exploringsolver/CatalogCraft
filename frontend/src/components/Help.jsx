@@ -6,19 +6,19 @@ function Help() {
       <div className="rounded-xl p-4 border-r-2 border-gray-300 fixed z-20">
         <h2 className="text-xl font-bold mb-4 text-center">Help Page</h2>
         <ul className="space-y-2">
-          <li><Link to="#overview" className="text-blue-500 hover:underline">Overview</Link></li>
-          <li><Link to="#setup" className="text-blue-500 hover:underline">Setup</Link></li>
-          <li><Link to="#workflow" className="text-blue-500 hover:underline">Workflow</Link></li>
-          <li><Link to="#authentication" className="text-blue-500 hover:underline">Authentication</Link></li>
-          <li><Link to="#create-store" className="text-blue-500 hover:underline">Create Store</Link></li>
-          <li><Link to="#manage-store" className="text-blue-500 hover:underline">Manage Store</Link></li>
-          <li><Link to="#make-catalogue" className="text-blue-500 hover:underline">Make Catalogue</Link></li>
-          <li><Link to="#admin-panel" className="text-blue-500 hover:underline">Admin Panel</Link></li>
-          <li><Link to="#dashboard" className="text-blue-500 hover:underline">Analytical Dashboard</Link></li>
-          <li><Link to="#database" className="text-blue-500 hover:underline">Database</Link></li>
-          <li><Link to="/product-search" className="text-blue-500 hover:underline">Product Search</Link></li>
-          <li><Link to="/bulk-data" className="text-blue-500 hover:underline">Bulk Data</Link></li>
-          <li><Link to="/my-catalog" className="text-blue-500 hover:underline">My Catalog</Link></li>
+          <li><Link to="#overview" className="text-[#ff5a1f] hover:underline">Overview</Link></li>
+          <li><Link to="#setup" className="text-[#ff5a1f] hover:underline">Setup</Link></li>
+          <li><Link to="#workflow" className="text-[#ff5a1f] hover:underline">Workflow</Link></li>
+          <li><Link to="#authentication" className="text-[#ff5a1f] hover:underline">Authentication</Link></li>
+          <li><Link to="#create-store" className="text-[#ff5a1f] hover:underline">Create Store</Link></li>
+          <li><Link to="#manage-store" className="text-[#ff5a1f] hover:underline">Manage Store</Link></li>
+          <li><Link to="#make-catalogue" className="text-[#ff5a1f] hover:underline">Make Catalogue</Link></li>
+          <li><Link to="#admin-panel" className="text-[#ff5a1f] hover:underline">Admin Panel</Link></li>
+          <li><Link to="#dashboard" className="text-[#ff5a1f] hover:underline">Analytical Dashboard</Link></li>
+          <li><Link to="#database" className="text-[#ff5a1f] hover:underline">Database</Link></li>
+          <li><Link to="/product-search" className="text-[#ff5a1f] hover:underline">Product Search</Link></li>
+          <li><Link to="/bulk-data" className="text-[#ff5a1f] hover:underline">Bulk Data</Link></li>
+          <li><Link to="/my-catalog" className="text-[#ff5a1f] hover:underline">My Catalog</Link></li>
         </ul>
       </div>
 

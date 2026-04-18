@@ -126,7 +126,7 @@ function VoiceForm() {
           formDataWithImages.append(key, formData[key]);
         }
       }
-      const response = await axios.post('http://panel.mait.ac.in:8012/catalogue/create/', formDataWithImages, {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/catalogue/create`, formDataWithImages, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data'

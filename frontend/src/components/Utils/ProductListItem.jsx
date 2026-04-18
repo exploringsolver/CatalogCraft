@@ -33,7 +33,7 @@ const ProductListItem = ({ product }) => {
         className="w-20 h-20 object-cover border-[1px] border-gray-700"
       />
       <CardContent className="flex flex-wrap ml-4 gap-5 items-center">
-        <Typography variant="" className=" text-lg hover:underline text-blue-700">
+        <Typography variant="" className=" text-lg hover:underline text-[#ff5a1f]">
           {name}
         </Typography>
         <Typography variant="body2" color="textSecondary">

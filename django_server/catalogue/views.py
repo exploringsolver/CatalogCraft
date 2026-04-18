@@ -809,7 +809,11 @@ import requests
 
 class EANLookupView(APIView):
     def get(self, request, ean):
-        api_url = f"https://api.barcodespider.com/v1/lookup?token=3cb93207e05597b307ba&upc={ean}"
+        barcode_spider_token = os.getenv("BARCODESPIDER_API_TOKEN")
+        if not barcode_spider_token:
+            return Response({"error": "Barcode lookup is not configured."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        api_url = f"https://api.barcodespider.com/v1/lookup?token={barcode_spider_token}&upc={ean}"
         response = requests.get(api_url)
 
         if response.status_code != 200:

@@ -62,6 +62,11 @@ userSchema.statics.createUser = async function (email, password, name, number, r
     throw new Error('Required fields are missing');
   }
 
+  // Normalize email to avoid duplicate-key errors caused by case/whitespace.
+  email = email.trim().toLowerCase();
+  name = name.trim();
+  number = String(number).trim();
+
   const user = new this({ email, password, name, number, role });
   await user.save();
   return user;

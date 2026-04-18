@@ -15,6 +15,9 @@ import CatalogList from './components/CatalogList';
 import ProfileScreen from './components/Profile/ProfileScreen';
 import ProductSearch from './components/Catalogues/ProductSearch';
 import Help from './components/Help';
+import AboutUs from './components/AboutUs';
+import Services from './components/Services';
+import Support from './components/Support';
 import Translator from './components/Translator';
 import CatalogueLateralForm from './components/Catalogues/CatalogueLateralForm';
 import MyCatalogs from './components/Catalogues/MyCatalogs';
@@ -49,6 +52,9 @@ function App() {
         <Route path="/bulk-data-show" element={<BulkDataAddition />} />
         <Route path="/login" element={<Login />} />
         <Route path="/help" element={<Help />} />
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/support" element={<Support />} />
         <Route path="/catalogue/:id" element={<Catalogue />} />
         <Route path="/yourcatalogue/:id" element={<UserCatalogCard />} />
         <Route path="*" element={<NotFound />} />

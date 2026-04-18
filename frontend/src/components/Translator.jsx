@@ -5,28 +5,49 @@ function Translator() {
     const googleTranslateRef = useRef(null);
 
     useEffect(() => {
-
-        let intervalId;
+        let intervalId = null;
+        let timeoutId = null;
+        let disposed = false;
 
         const checkGoogleTranslate = () => {
-            if (window.google && window.google.translate) {
+            const mountNode = googleTranslateRef.current;
+            if (
+                disposed ||
+                !mountNode ||
+                mountNode.dataset.translateReady === 'true' ||
+                !window.google ||
+                !window.google.translate
+            ) {
+                return;
+            }
+
+            try {
+                mountNode.dataset.translateReady = 'true';
+                new window.google.translate.TranslateElement(
+                    {
+                        pageLanguage: "en",
+                        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+                    },
+                    mountNode
+                );
                 clearInterval(intervalId);
-                new window.google.translate.TranslateElement({
-                    pageLanguage: "en",
-                    layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
-                },
-                    googleTranslateRef.current
-                )
+            } catch (error) {
+                mountNode.dataset.translateReady = 'false';
+                console.error("Failed to initialize Google Translate widget:", error);
             }
         };
-        intervalId = setInterval(checkGoogleTranslate, 100);
 
+        intervalId = setInterval(checkGoogleTranslate, 250);
+        timeoutId = setTimeout(() => clearInterval(intervalId), 10000);
+        checkGoogleTranslate();
+
+        return () => {
+            disposed = true;
+            clearInterval(intervalId);
+            clearTimeout(timeoutId);
+        };
     }, [])
-    return (
-        <>
-            <div className=' xl:right-16 xl:bottom-16 z-[1000]' ref={googleTranslateRef}></div>
-        </>
-    )
+    return <div className="google-translate-widget" ref={googleTranslateRef} />;
 }
 
 export default Translator

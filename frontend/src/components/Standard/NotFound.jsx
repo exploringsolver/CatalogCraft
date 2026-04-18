@@ -10,7 +10,7 @@ const NotFound = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
             </div>
-            <p className="mt-4 text-gray-600">or you can go to <a href="/" className="text-blue-500">home</a>.</p>
+            <p className="mt-4 text-gray-600">or you can go to <a href="/" className="text-[#ff5a1f]">home</a>.</p>
         </div>
     );
 };

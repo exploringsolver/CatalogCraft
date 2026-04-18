@@ -167,18 +167,38 @@ function CatalogueAdmin() {
     };
 
     const getFilteredCatalogues = () => {
-        return catalogues.filter((catalogue) =>
-            catalogue.product_name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        const q = String(searchTerm || '').toLowerCase().trim();
+        if (!q) return catalogues;
+
+        return catalogues.filter((catalogue) => {
+            const name = String(catalogue?.product_name || catalogue?.name || '').toLowerCase();
+            const ean = String(catalogue?.ean || '').toLowerCase();
+            const sku = String(catalogue?.seller_sku || '').toLowerCase();
+            const category =
+                typeof catalogue?.category === 'object'
+                    ? String(catalogue?.category?.category || '').toLowerCase()
+                    : String(catalogue?.category || '').toLowerCase();
+
+            return (
+                name.includes(q) ||
+                ean.includes(q) ||
+                sku.includes(q) ||
+                category.includes(q)
+            );
+        });
     };
 
     const getSortedCatalogues = (catalogueList) => {
         return sortCriteria
             ? catalogueList.sort((a, b) => {
                 if (sortCriteria === 'price') {
-                    return sortOrder === 'asc' ? parseFloat(a.mrp) - parseFloat(b.mrp) : parseFloat(b.mrp) - parseFloat(a.mrp);
+                    const aPrice = Number.parseFloat(a?.mrp ?? a?.price ?? 0) || 0;
+                    const bPrice = Number.parseFloat(b?.mrp ?? b?.price ?? 0) || 0;
+                    return sortOrder === 'asc' ? aPrice - bPrice : bPrice - aPrice;
                 } else if (sortCriteria === 'name') {
-                    return sortOrder === 'asc' ? a.product_name.localeCompare(b.product_name) : b.product_name.localeCompare(a.product_name);
+                    const aName = String(a?.product_name ?? a?.name ?? '');
+                    const bName = String(b?.product_name ?? b?.name ?? '');
+                    return sortOrder === 'asc' ? aName.localeCompare(bName) : bName.localeCompare(aName);
                 } else {
                     return 0;
                 }

@@ -19,7 +19,7 @@
     "axios": "^1.7.2",
     "framer-motion": "^11.2.6",
     "html5-qrcode": "^2.3.8",
-    "quagga": "^0.12.1",
+    "quagga": "^0.6.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",

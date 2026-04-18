@@ -3,9 +3,15 @@ const mongoose = require('../../../services/mongoose');
 
 const catalogueSchema = new mongoose.Schema({
   product_name: String,
+  description: String,
+  brand: String,
+  color: String,
+  size: String,
   mrp: Number,
   selling_price: Number,
   gst_percentage: Number,
+  ean: String,
+  csin: String,
   asin: String,
   upc: String,
   product_image_1: String,

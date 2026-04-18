@@ -5,7 +5,6 @@ import AuthContext from './Context/Auth/AuthContext';
 
 const NavbarMain = () => {
     const { isAuthenticated} = useContext(AuthContext);
-    console.log(isAuthenticated);
   return (
     <div>
         {

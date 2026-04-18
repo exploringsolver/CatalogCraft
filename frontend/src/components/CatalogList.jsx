@@ -2,25 +2,32 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'; // Import Link from React Router
 import { EcommerceCard } from './Utils/EcommerceCard';
+import { formatINR } from '../utils/currency';
 
 
 function CatalogList() {
   const [catalogsByCategory, setCatalogsByCategory] = useState({});
-  const url = "http://panel.mait.ac.in:8012";
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://panel.mait.ac.in:8012/catalogue/get-all/');
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/catalogue/get-all`);
         const catalogs = response.data;
 
         // Group catalogs by category
         const catalogsGroupedByCategory = {};
         catalogs.forEach(catalog => {
-          if (catalog.category in catalogsGroupedByCategory) {
-            catalogsGroupedByCategory[catalog.category].push(catalog);
+          const categoryKey =
+            typeof catalog?.category === "object"
+              ? catalog?.category?.category
+              : catalog?.category;
+          const safeKey = categoryKey || "Uncategorized";
+
+          if (safeKey in catalogsGroupedByCategory) {
+            catalogsGroupedByCategory[safeKey].push(catalog);
           } else {
-            catalogsGroupedByCategory[catalog.category] = [catalog];
+            catalogsGroupedByCategory[safeKey] = [catalog];
           }
         });
         
@@ -41,16 +48,28 @@ function CatalogList() {
           <h2 className="text-xl font-bold mb-4 text-orange-700">{category}</h2>
           <hr />
           <div className="flex flex-wrap gap-10 ">
-            {catalogs.map(catalog => (
-              <Link key={catalog.id} to={`/catalogue/${catalog.id}`} className="block">
-                <EcommerceCard
-                  imageUrl={`${url}${catalog.product_image_1}`}
-                  productName={catalog.product_name}
-                  price={`${catalog.selling_prize}`}
-                  description={`MRP: ${catalog.mrp}`}
-                />
-              </Link>
-            ))}
+            {catalogs.map((catalog) => {
+              const catalogId = catalog?._id || catalog?.id;
+              if (!catalogId) return null;
+
+              const productImage = catalog?.product_image_1;
+              const imageUrl = productImage
+                ? String(productImage).startsWith("http")
+                  ? productImage
+                  : `${url}${productImage}`
+                : null;
+
+              return (
+                <Link key={catalogId} to={`/catalogue/${catalogId}`} className="block">
+                  <EcommerceCard
+                    imageUrl={imageUrl}
+                    productName={catalog.product_name}
+                    price={formatINR(catalog.selling_price)}
+                    description={catalog.description || `MRP: ${catalog.mrp}`}
+                  />
+                </Link>
+              );
+            })}
           </div>
         </div>
       ))}

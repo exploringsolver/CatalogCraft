@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { EcommerceCard } from '../Utils/EcommerceCard';
+import { formatINR } from '../../utils/currency';
 
 const MyCatalogs = () => {
     const [catalogs, setCatalogs] = useState([]);
@@ -39,7 +40,7 @@ const MyCatalogs = () => {
             <h1 className="text-3xl font-bold mb-8 text-gray-700">Your Catalogues by Category</h1>
             {categories.map(category => (
                 <div key={category} className="mb-8 shadow px-5 py-5 rounded">
-                    <h2 className="text-xl font-bold mb-4 text-blue-700">{category}</h2>
+                    <h2 className="text-xl font-bold mb-4 text-[#ff5a1f]">{category}</h2>
                     <hr />
                     <div className="flex flex-wrap gap-10">
                         {catalogs.filter(catalog => catalog.category === category).map(catalog => (
@@ -47,7 +48,7 @@ const MyCatalogs = () => {
                                 <EcommerceCard
                                     imageUrl={`${backend_url}${catalog.product_image_1}`}
                                     productName={catalog.product_name}
-                                    price={`${catalog.selling_prize}`}
+                                    price={formatINR(catalog.selling_prize)}
                                     description={`MRP: ${catalog.mrp}`}
                                     ean={`${catalog.ean}`}
                                 />

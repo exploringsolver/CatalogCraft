@@ -28,7 +28,7 @@ import {
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import AuthContext from "./Context/Auth/AuthContext";
 import Translator from "./Translator";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -45,7 +45,7 @@ function ProfileMenu() {
     {
       label: "Edit Profile",
       icon: Cog6ToothIcon,
-      to: '/editprof'
+      to: '/profile'
     },
     {
       label: "Catalogues",
@@ -97,21 +97,18 @@ function ProfileMenu() {
         {profileMenuItems.map(({ label, icon, to }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
           return (
-            <a key={label} href={to}>
+            <Link key={label} to={to} className="block">
               <MenuItem
-                key={label}
                 onClick={closeMenu}
                 className={`flex items-center gap-2 rounded ${isLastItem
                   ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
                   : ""
                   }`}
               >
-
                 {React.createElement(icon, {
                   className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
                   strokeWidth: 2,
                 })}
-
                 <Typography
                   as="span"
                   variant="small"
@@ -121,7 +118,7 @@ function ProfileMenu() {
                   {label}
                 </Typography>
               </MenuItem>
-            </a>
+            </Link>
           );
         })}
       </MenuList>
@@ -147,7 +144,7 @@ const navListItems = [
   {
     label: "Add Catalog",
     icon: CodeBracketSquareIcon,
-    to: "/product-search"
+    to: "/add-catalog"
   },
   {
     label: "Manage Catalog",
@@ -158,25 +155,18 @@ const navListItems = [
 
 function NavList() {
   return (
-    <ul className="mt-2 mr-5 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
-      {/* <NavListMenu /> */}
-      {navListItems.map(({ label, icon, to }, key) => (
-        <Typography
-          key={label}
-          as="a"
-          href={to}
-          variant="small"
-          color="gray"
-          className="font-medium text-blue-gray-500"
-        >
-          <MenuItem className="flex items-center gap-2 lg:rounded-full">
-            {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
-            <span className="text-gray-900"> {label}</span>
-          </MenuItem>
-        </Typography>
-
+    <ul className="mt-2 flex flex-col gap-2 lg:mt-0 lg:mb-0 lg:flex-row lg:items-center">
+      {navListItems.map(({ label, icon, to }) => (
+        <li key={label}>
+          <Link
+            to={to}
+            className="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-white/5"
+          >
+            {React.createElement(icon, { className: "h-[18px] w-[18px] text-[#ef4444]" })}
+            <span>{label}</span>
+          </Link>
+        </li>
       ))}
-
     </ul>
   );
 }
@@ -195,16 +185,17 @@ export function ComplexNavbar() {
 
   const { logout } = useContext(AuthContext);
   return (
-    <Navbar className="mx-auto max-w-screen-xl p-2 
-    sticky top-0 lg:rounded-full lg:pl-6">
-      <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
+    <Navbar className="sticky top-4 z-50 mx-auto mt-4 max-w-7xl border border-white/10 bg-slate-950/75 px-4 py-3 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <div className="relative mx-auto flex items-center justify-between text-slate-100">
         <Typography
-          as="a"
-          href="/"
-          className="mr-4 ml-2 cursor-pointer py-1.5 font-medium"
+          as={Link}
+          to="/"
+          className="mr-4 ml-2 flex flex-col cursor-pointer py-1.5 font-semibold"
         >
-          CatalogCraft
-          <Translator />
+          <span className="text-lg tracking-[-0.04em] text-white">CatalogCraft</span>
+          <span className="text-[11px] uppercase tracking-[0.28em] text-slate-400">
+            Premium Catalog OS
+          </span>
         </Typography>
         <div className="hidden lg:block">
           <NavList />
@@ -219,9 +210,17 @@ export function ComplexNavbar() {
           <Bars2Icon className="h-6 w-6" />
         </IconButton>
 
+        <div className="hidden lg:block">
+          <Translator />
+        </div>
         <ProfileMenu />
-        <Button size="sm" variant="text" onClick={logout}>
-          <span>Log out</span>
+        <Button
+          size="sm"
+          variant="text"
+          onClick={logout}
+          className="rounded-full text-slate-200 hover:bg-white/5"
+        >
+          <span className="font-medium">Log out</span>
         </Button>
       </div>
       <Collapse open={isNavOpen} className="overflow-scroll">

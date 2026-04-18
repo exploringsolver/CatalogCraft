@@ -7,6 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CatalogCraft- Catalog Digitization with one click!!</title>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- Prevent translate widget from failing due to missing global callback -->
+  <script>
+    function googleTranslateElementInit() {}
+  </script>
   <script type="text/javascript"
     src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
@@ -14,14 +18,6 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
-  <script>
-    window.embeddedChatbotConfig = {
-      chatbotId: "IkRIX5RjR50sVgVpNVvUm",
-      domain: "www.chatbase.co"
-    }
-  </script>
-  <script src="https://www.chatbase.co/embed.min.js" chatbotId="IkRIX5RjR50sVgVpNVvUm" domain="www.chatbase.co" defer>
-  </script>
 </body>
 
 </html>
